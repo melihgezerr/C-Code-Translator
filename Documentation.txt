@@ -1,0 +1,368 @@
+
+!---IMPORTANT--
+PLS ADD -lm WHILE COMPILING OUTPUT FILE (for example gcc file.c -lm).
+--IMPORTANT---!
+
+
+
+---helper.c---
+
+	Includes all the functions that check syntax. Also includes some other helper functions for matrix and vector manipulations.
+
+
+- void handleAssignment(char *leftPart, char rightPart[1200], int currentLine);
+
+	This function is just a main router. Based on the right part call the correct functions and call the all helper functions that is needed for matrix or vector. Also at the end of the function checks whether left part and the right part of the assignment dimensions are matched. 
+
+
+- int firstDimension(char varName[], char varlist[300][50], int currIndex)
+	
+	Takes the variable name and returns its first dimension as integer.
+If variable is a scalar returns 0, if variable is unknown returns -1, else 
+returns the first dimension of the variable. Parameters are the name of
+the variable, a list that holds all the variables and size of that list
+respectively.
+
+
+- int secondDimension(char varName[], char varlist[300][50], int currIndex)
+	
+	Takes the variable name and returns its second dimension as integer.
+If variable is a scalar returns 0, if variable is unknown returns -1, else 
+returns the second dimension of the variable. Parameters are the name of
+the variable, a list that holds all the variables and size of that list
+respectively.
+
+
+- int choose(char expr1[], char expr2[], char expr3[], char expr4[],
+  char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+
+	Takes the <choose> parameters, a whole expression that includes
+the <choose> statement, current line and an array that will be crafted
+as parameters respectively. Does the controls of the choose expressions
+and gives an error when an invalid action occurs. If an expression includes
+any other function (e.g. sqrt,tr.), calls the relevant function.
+Returns 1 always.
+
+
+- int tr(char insideTr[], char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+
+	Takes the inside of the transpose function, a whole expression that
+includes the <tr> statement, current line and an array that will be crafted
+as parameters respectively. Does the controls of the transpose expressions
+and gives an error when an invalid action occurs. If an expression includes
+any other function (e.g. sqrt,choose.), calls the relevant function.
+Returns 1 always.
+
+
+- int sqrtt(char insideSqrt[], char rightPart[1200], int currentLine,
+            char craftedArray[3][1000]);
+
+	Takes the inside of the sqrt function, a whole expression that
+includes the <sqrt> statement, current line and an array that will be crafted
+as parameters respectively. Does the controls of the sqrt expressions
+and gives an error when an invalid action occurs. If an expression includes
+any other function (e.g. tr,choose.), calls the relevant function.
+Returns 1 always.
+
+
+- void parseAndCallChoose(char chooseStmt[], char rightPart[1200],
+  int currentLine, char craftedArray[3][1000]);
+
+	Takes the whole choose statement, a whole expression that
+includes the <choose> statement, current line and an array that will be crafted
+as parameters respectively. Parses the function to its given parameters
+and calls the <choose> function with these parameters. Also checks for 
+the parenthesis and gives an error when any invalid action occurs.
+
+
+- void parseAndCallTranspose(char transposeStmt[], char rightPart[1200],
+       int currentLine, char craftedArray[3][1000]);
+
+	Takes the whole tr statement, a whole expression that
+includes the <tr> statement, current line and an array that will be crafted
+as parameters respectively. Parses the function to its given parameters
+and calls the <tr> function with these parameters. Also checks for 
+the parenthesis and gives an error when any invalid action occurs.
+
+
+- void parseAndCallSqrt(char sqrtStmt[], char rightPart[1200],
+       int currentLine, char craftedArray[3][1000]);
+
+	Takes the whole sqrt statement, a whole expression that
+includes the <sqrt> statement, current line and an array that will be crafted
+as parameters respectively. Parses the function to its given parameters
+and calls the <sqrt> function with these parameters. Also checks for 
+the parenthesis and gives an error when any invalid action occurs.
+
+
+- void parseAndCallExpr(char exprStmt[], char rightPart[1200],
+       int currentLine, char craftedArray[3][1000]);
+
+	Takes the whole operational statement, a whole expression that
+includes the statement, current line and an array that will be crafted
+as parameters respectively. Parses the function to its given parameters
+and calls the <handleStack> function with these parameters. Also checks for 
+the parenthesis and gives an error when any invalid action occurs.
+
+
+- int isExpression(char exprStmt[], char rightPart[1200], int currentLine);
+
+	Takes the operational statement,  a whole expression that
+includes the statement as parameters respectively. Checks whether
+the statement includes "+,-,*" signs in the outermost layer. If so,
+returns 1, else returns 0. Also checks for parentheses and terminates 
+when any error occurs.
+
+
+- void removeUnnecessaryPharanthesis(char copiedExpr[]);
+
+	Changes the input so that it has no extra parentheses.
+Check for invalid parenthesis and gives an error when invalid
+action occurs.
+
+
+- int isNumber(char s[]);
+
+	Returns 1 when the input is a decimal, double or float.
+Otherwise returns 0.
+
+
+- void parseAndCallArray(char arrayStmt[], char rightPart[1200],
+       int currentLine, char craftedArray[3][1000]);
+
+	Takes the whole statement in the form of "A[x][y]", a whole expression that
+includes the statement, current line and an array that will be crafted
+as parameters respectively. Parses the function to its given parameters
+(A,x,y) and calls the <array> function with these parameters. Also checks for 
+the parenthesis and gives an error when any invalid action occurs.
+
+
+- void arrangeArray(char *pointer);
+
+	Converts Matlab matrix representation to c two dimensional array representation. For example A[1,2] to A[1][2].
+
+
+- void assignArray(char *array, int firstD, int secondD, int currentLine);
+
+	Convert 1d array initialization to 2d array initialization. For example A[2][2] = {1,2,3,4} to A[2][2] = {{1,2},{3,4}}.
+
+
+- void error(int currentLine);
+
+	When an error is encountered this function writes the line (Error (<line>)) that errors occurred and stop the program. 
+
+- void handleIndexing(char content[]);
+
+	Add -1 to each dimension of matrix or vector. Because dimensions are start from 1. For example A[1][1] to A[1-1][1-1].
+
+
+- void handleVector(char content[]);
+
+	Additionally adds [1] to the end of the vector indexing. Because we store vectors as matrix. For example A[1] to A[1][1].
+
+
+- int array(char varName[], char insideArrayFirst[], char insideArraySecond[],char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+
+	Takes the var name, inside of the first square brackets, inside of the second square brackets, right part, current line and an array that will be crafted as parameters respectively. Does the controls of the array indexing and gives an error when an invalid action occurs. If an expression includes any other function (e.g. tr,choose.), calls the relevant function.
+
+
+- int expr(char tokens[100][100], char *str, int *cur);
+
+	Takes tokens array that stores the expression elements based on the white spaces and turns it to the post fix notation and put the last modified array to str string. All other functions(factor, term etc) are helping this base function.
+
+
+
+
+---main.c---
+
+	Main class for the program. Takes the input file and create the output file(takes the input file name and add .c extension) according to the instructions. Also contains 2 dimensional var list array that stores all the scalars vectors and matrixes variable inside and contains the information about the current line. Read each line of the input file and based on the content of the line(assignment, choose, sqrt, print etc) call the necessary functions that are located in helper.c file. It writes almost all the content of the output file except the functions(choose, trs, ss etc). Creates all the variables with malloc but at the end of the all instructions free it to avoid memory leak. Also it does not contain any function.  
+ 
+
+
+	
+---stack.c---
+
+	This class includes stack implementation and a function that takes elements from an 2 dimension array ,that is arranged according to postfix notation, and do the necessary calculations according to operators.
+
+
+- struct Stack* createStack(unsigned capacity);
+
+	Create a stack with a given capacity. Also creates all stack(struct) elements.
+
+
+- int isFull(struct Stack* stack);
+
+	Checks whether a stack is full or not. Return 1 if stack is full.
+
+
+- int isEmpty(struct Stack* stack);
+	
+	Checks whether a stack is empty or not. Return 1 if stack is empty.
+
+
+- void push(struct Stack* stack, char* item);
+
+	Push the given item to the stack. Do nothing if the stack is full.
+
+
+- char* peek(struct Stack* stack);
+	
+	Return the item that is top of the stack. Return bosStack string if stack is empty.
+
+
+- char* pop(struct Stack* stack);
+
+	Pop top item from the stack. Return bosStack string if stack is empty.
+
+
+- void  handleStack(char content[30][100],char arr[1200],int index,int currentLine,char rightPart[1200],char craftedArray[3][1000]);
+
+	Do all the necessary adjustments according to 2 dimensional content array. Pop the two elements if it encounters an operator. Give error if there are no two operands. Depend on the first and second element's dimensions call the necessary functions and do the adjustments.After all the adjustments put the last adjusted string to craftedArray's first element. Also put the first dimension of the result to craftedArray's second element and put the second dimension of the result to craftedArray's third element.
+
+
+- int getFirstDimension(char varName[], char varlist[50][1000], int currIndex); 
+
+	Takes the variable name and returns its first dimension as integer.
+If variable is a scalar returns 0, if variable is unknown returns -1, else 
+returns the first dimension of the variable. Parameters are the name of
+the variable, a list that holds all the variables and size of that list
+respectively.
+
+
+- int getSecondDimension(char varName[], char varlist[50][1000], int currIndex);
+	
+	Takes the variable name and returns its second dimension as integer.
+If variable is a scalar returns 0, if variable is unknown returns -1, else 
+returns the second dimension of the variable. Parameters are the name of
+the variable, a list that holds all the variables and size of that list
+respectively.
+	
+
+
+
+---function.c---
+
+	This class includes implementation of 3 string functions that is widely used for string operations.
+
+
+- int startsWith(const char *pre, const char *str);
+
+	Checks if a string starts with a given substring. Return 1 the result is true. Return 0 if the result is false.
+
+
+- void removeNewLine(char * temp);
+
+	Remove new line character (if exists) after the string. This is especially useful for file reading.
+
+
+- void trim(char *str);
+	
+	Remove all the blankes after and before the string. Works very similar to Java trim function.
+
+
+
+	
+---operation.c---
+
+	This class does not involve in compilation process. But it contains necessary functions for  expressions. Also includes the implementation of choose and tr functions.
+
+
+- float ss(float number1, float number2,char operation);
+	
+	Function for scalar scalar operations. Do the necessary calculations based on the operation argument.
+
+
+- float ** sm(int number,int dim1,int dim2,float** matrix);
+	
+	Function for scalar matrix(or vector) operations. Do the necessary calculations based on the operation argument(operation can only be *).
+
+
+- float **  mm(int dim1,int dim2,float** matrix1,int dim3,int dim4,float** matrix2,char operation);
+	
+	Function for matrix(or vector) matrix(or vector) operations. Do the necessary calculations based on the operation argument. This function do not check if the dimensions are correct because it is checked in the program.
+
+
+- float choose(float expr1,float expr2,float expr3,float expr4);
+
+	Implementation of choose function.
+
+
+- float trs(float scalar);
+	
+	Implementation of tr function for scalars.
+
+- float** trm(int dim1,int dim2,float** matrix);
+
+	Implementation of tr function for matrixes and vectors.
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+

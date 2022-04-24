@@ -1,0 +1,16 @@
+void handleAssignment(char*leftPart,char*rightPart,int currentLine);
+int firstDimension(char varName[], char varlist[300][50], int currIndex);
+int secondDimension(char varName[], char varlist[300][50], int currIndex);
+void assignArray(char *array, int firstD, int secondD, int currentLine);
+void error(int currentLine);
+void parseAndCallChoose(char chooseStmt[], char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+void parseAndCallTranspose(char transposeStmt[], char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+void parseAndCallSqrt(char sqrtStmt[], char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+void parseAndCallExpr(char exprStmt[], char rightPart[1200], int currentLine,char craftedArray[3][1000]);
+int isExpression(char exprStmt[], char rightPart[1200], int currentLine);
+int isNumber(char s[]);
+void removeUnnecessaryPharanthesis(char copiedExpr[]);
+void handleIndexing(char content[]);
+int array(char varName[], char insideArrayFirst[], char insideArraySecond[],char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+void parseAndCallArray(char arrayStmt[], char rightPart[1200], int currentLine, char craftedArray[3][1000]);
+void handleVector(char content[]);
